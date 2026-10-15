@@ -1,0 +1,26 @@
+# Build output
+build/
+DerivedData/
+*.xcarchive
+*.dmg
+*.profraw
+*.profdata
+
+# Xcode user state
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+.swiftpm/
+
+# Signing material and credentials
+*.p8
+*.p12
+*.cer
+*.mobileprovision
+*.provisionprofile
+*.keychain-db
+.env
+.env.*
+
+# macOS
+.DS_Store
