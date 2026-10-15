@@ -13,29 +13,29 @@
 
 # Akkumulator
 
-Akkumulator is a free, open-source battery health app for macOS. It reads the battery of your MacBook and of any iPhone or iPad connected over USB or Wi-Fi: health in percent, cycle count, full charge vs. design capacity, temperature, charging power, cell voltages and more.
+Akkumulator is a free, open-source battery health app for macOS. It tells you how your MacBook's battery is doing, and the battery of any iPhone or iPad you plug in or pair over Wi-Fi: health, cycle count, capacity, temperature and quite a bit more.
 
 ## Features
 
-- **Mac battery details**: charge, health (full charge / design capacity), cycle count, temperature, voltage, current, power draw, power adapter, per-cell voltages and Qmax, lifetime data (operating time, min/max temperature and currents), serial number and manufacture date.
-- **iPhone and iPad battery health on your Mac**: the same values for any trusted iOS or iPadOS device connected via USB or Wi-Fi. Apple Watch shows the charge level.
-- **History**: one snapshot per device per day (automatic, can be turned off) or on demand, with charts, a sortable table and CSV export.
-- **iCloud sync** of your history between Macs.
-- **coconutBattery import**: reads `.ccba` export files and skips duplicates (coconutBattery must be installed).
-- **Optional menu bar item**, showing an icon or the current charge.
-- **Low battery notifications** with a threshold for Mac and for iOS devices.
-- **Raw data view** listing every IORegistry value the battery reports.
-- **Automatic updates** through [Sparkle](https://sparkle-project.org).
-- Light and Dark Mode, native SwiftUI.
-- Available in English, German, French, Spanish, Italian, Portuguese (Portugal and Brazil), Simplified Chinese, Korean and Japanese.
+- Charge, health, cycle count, temperature, voltage, current and power draw of your Mac's battery. Also the power adapter, per-cell voltages, lifetime stats, serial number and manufacture date.
+- The same readings for iPhones and iPads connected over USB or Wi-Fi. An Apple Watch only reports its charge level.
+- One snapshot per device and day, or whenever you click the button. History shows up as a chart and a sortable table, and you can export it as CSV.
+- History syncs between your Macs through iCloud.
+- Import from coconutBattery `.ccba` exports. Duplicates are skipped; coconutBattery has to be installed.
+- A menu bar item if you want one, with an icon or the current charge.
+- A notification when the Mac or an iOS device drops below a threshold you pick.
+- A raw data view with every IORegistry value the battery reports.
+- Updates itself through [Sparkle](https://sparkle-project.org).
+- Light and Dark Mode.
+- English, German, French, Spanish, Italian, Portuguese (Portugal and Brazil), Simplified Chinese, Korean and Japanese.
 
 ## Installation
 
 1. Download the latest `Akkumulator-x.y.z.dmg` from [Releases](https://github.com/fwilldev/Akkumulator/releases/latest).
 2. Open the DMG and drag **Akkumulator** into **Applications**.
-3. Open it. The app is signed with a Developer ID and notarized by Apple.
+3. Open it. The app is signed with a Developer ID and notarized by Apple, so macOS won't complain.
 
-After that, Akkumulator updates itself. You can also use **Akkumulator › Check for Updates…**.
+From then on Akkumulator updates itself. To check by hand, use **Akkumulator › Check for Updates…**.
 
 ### Requirements
 
@@ -49,7 +49,7 @@ After that, Akkumulator updates itself. You can also use **Akkumulator › Check
 Connect the iPhone with a cable (or on the same Wi-Fi after it has been paired once), unlock it and trust the Mac. It shows up in the sidebar under *Connected*, with health, cycle count and capacity.
 
 **Can I import my coconutBattery history?**
-Yes, via **File › Import coconutBattery Data…**. The import needs coconutBattery installed on the same Mac, because the export files are encrypted and Akkumulator reads the key from coconutBattery instead of shipping it. Devices are identified by serial number, so imported and new history line up.
+Yes, via **File › Import coconutBattery Data…**. coconutBattery has to be installed on the same Mac: its export files are encrypted, and Akkumulator reads the key from the installed app instead of shipping it. Akkumulator matches devices by serial number, so imported entries and new ones end up in the same history.
 
 **Why isn't it in the Mac App Store?**
 Reading iPhone and iPad data needs Apple's private `MobileDevice.framework`, which App Store apps can't use. For the same reason the app isn't sandboxed.
@@ -85,13 +85,7 @@ History is stored in `~/Library/Application Support/Akkumulator/History.store`.
 
 ### Releases
 
-`./scripts/release.sh 1.2.0` archives the app, exports it with Developer ID, notarizes and staples the DMG, signs it for Sparkle and publishes a GitHub release with the DMG and `appcast.xml`. It runs on the maintainer's Mac: it needs Xcode signed in to the team, a `notary` profile from `xcrun notarytool store-credentials` and the Sparkle EdDSA key in the login keychain.
-
-## Known limitations
-
-- **Manufacture date**: 17-character battery serials carry the last digit of the year at position 4 and the ISO week at positions 5–6 (e.g. `F8Y`·`2`·`09`… = week 9 of 2022); the decade comes from the operating time. The 18-character serials of newer iPhones (iPhone 15 and later) don't follow this scheme, so only *First use* and operating time are shown there.
-- **coconutBattery import**: the `.ccba` format was reverse-engineered from coconutBattery 4.4 (AES-256-GCM → LZFSE → JSON, with LZ4-compressed NSKeyedArchiver dumps per record). If coconutBattery changes it, the import fails with an error message.
-- No Intel Mac support, no SSD info and no online sharing.
+`./scripts/release.sh 1.2.0` builds the app, signs it with Developer ID, notarizes the DMG, signs it for Sparkle and publishes a GitHub release with the DMG and `appcast.xml`. It runs on my Mac, since it needs Xcode signed in to the team, a `notary` profile from `xcrun notarytool store-credentials` and the Sparkle key in the login keychain.
 
 ## Contributing
 
