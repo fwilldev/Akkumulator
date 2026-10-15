@@ -4,7 +4,6 @@
 
 <p align="center">
   <a href="https://github.com/fwilldev/Akkumulator/releases/latest"><img src="https://img.shields.io/github/v/release/fwilldev/Akkumulator?label=download&color=0a2a8a" alt="Latest release"></a>
-  <a href="https://github.com/fwilldev/Akkumulator/releases"><img src="https://img.shields.io/github/downloads/fwilldev/Akkumulator/total?color=0a2a8a" alt="Downloads"></a>
   <img src="https://img.shields.io/badge/macOS-15%2B-0a2a8a?logo=apple" alt="macOS 15+">
   <img src="https://img.shields.io/badge/Apple%20Silicon-arm64-0a2a8a" alt="Apple Silicon">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/fwilldev/Akkumulator?color=0a2a8a" alt="MIT license"></a>
