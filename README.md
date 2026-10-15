@@ -13,7 +13,7 @@
 
 # Akkumulator
 
-Akkumulator is a free, open-source battery health app for macOS. It reads the battery of your MacBook and of any iPhone or iPad connected over USB or Wi-Fi: health in percent, cycle count, full charge vs. design capacity, temperature, charging power, cell voltages and more. If you've used coconutBattery, you'll feel at home, and you can bring your coconutBattery history along.
+Akkumulator is a free, open-source battery health app for macOS. It reads the battery of your MacBook and of any iPhone or iPad connected over USB or Wi-Fi: health in percent, cycle count, full charge vs. design capacity, temperature, charging power, cell voltages and more.
 
 ## Features
 
@@ -48,8 +48,8 @@ After that, Akkumulator updates itself. You can also use **Akkumulator › Check
 **How do I check my iPhone battery health on a Mac?**
 Connect the iPhone with a cable (or on the same Wi-Fi after it has been paired once), unlock it and trust the Mac. It shows up in the sidebar under *Connected*, with health, cycle count and capacity.
 
-**Is this a coconutBattery alternative?**
-Yes. Akkumulator reads the same data sources and can import coconutBattery exports via **File › Import coconutBattery Data…**. The import needs coconutBattery installed on the same Mac, because the export files are encrypted and Akkumulator reads the key from coconutBattery instead of shipping it. Devices are identified by serial number, so imported and new history line up.
+**Can I import my coconutBattery history?**
+Yes, via **File › Import coconutBattery Data…**. The import needs coconutBattery installed on the same Mac, because the export files are encrypted and Akkumulator reads the key from coconutBattery instead of shipping it. Devices are identified by serial number, so imported and new history line up.
 
 **Why isn't it in the Mac App Store?**
 Reading iPhone and iPad data needs Apple's private `MobileDevice.framework`, which App Store apps can't use. For the same reason the app isn't sandboxed.
@@ -89,7 +89,7 @@ History is stored in `~/Library/Application Support/Akkumulator/History.store`.
 
 ## Known limitations
 
-- **Manufacture date**: 17-character battery serials carry the last digit of the year at position 4 and the ISO week at positions 5–6 (e.g. `F8Y`·`2`·`09`… = week 9 of 2022), the same rule coconutBattery 4.4 uses; the decade comes from the operating time. The 18-character serials of newer iPhones (iPhone 15 and later) don't follow this scheme, so only *First use* and operating time are shown there.
+- **Manufacture date**: 17-character battery serials carry the last digit of the year at position 4 and the ISO week at positions 5–6 (e.g. `F8Y`·`2`·`09`… = week 9 of 2022); the decade comes from the operating time. The 18-character serials of newer iPhones (iPhone 15 and later) don't follow this scheme, so only *First use* and operating time are shown there.
 - **coconutBattery import**: the `.ccba` format was reverse-engineered from coconutBattery 4.4 (AES-256-GCM → LZFSE → JSON, with LZ4-compressed NSKeyedArchiver dumps per record). If coconutBattery changes it, the import fails with an error message.
 - No Intel Mac support, no SSD info and no online sharing.
 
@@ -103,4 +103,4 @@ Akkumulator is free and will stay that way. If it saved you a trip to the Genius
 
 ## License
 
-[MIT](LICENSE). Not affiliated with Apple or coconutBattery.
+[MIT](LICENSE). Not affiliated with Apple.
