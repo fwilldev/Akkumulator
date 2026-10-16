@@ -106,7 +106,7 @@ xcodebuild -project Akkumulator.xcodeproj -scheme Akkumulator -derivedDataPath b
 
 ### 发布
 
-`./scripts/release.sh 1.2.0` 会构建 App，使用 Developer ID 签名，对 DMG 进行公证，为 Sparkle 签名，并发布包含 DMG 和 `appcast.xml` 的 GitHub release。它在我自己的 Mac 上运行，因为需要 Xcode 登录团队账户、通过 `xcrun notarytool store-credentials` 创建的 `notary` 配置，以及登录钥匙串中的 Sparkle 密钥。
+`./scripts/release.sh 1.2.0 notes.md` 会构建 App，使用 Developer ID 签名，对 DMG 进行公证，为 Sparkle 签名，并发布包含 DMG 和 `appcast.xml` 的 GitHub release。它在我自己的 Mac 上运行，因为需要 Xcode 登录团队账户、通过 `xcrun notarytool store-credentials` 创建的 `notary` 配置，以及登录钥匙串中的 Sparkle 密钥。
 
 ## 参与贡献
 

@@ -105,7 +105,7 @@ History is stored in `~/Library/Application Support/Akkumulator/History.store`.
 
 ### Releases
 
-`./scripts/release.sh 1.2.0` builds the app, signs it with Developer ID, notarizes the DMG, signs it for Sparkle and publishes a GitHub release with the DMG and `appcast.xml`. It runs on my Mac, since it needs Xcode signed in to the team, a `notary` profile from `xcrun notarytool store-credentials` and the Sparkle key in the login keychain.
+`./scripts/release.sh 1.2.0 notes.md` builds the app, signs it with Developer ID, notarizes the DMG, signs it for Sparkle and publishes a GitHub release with the DMG and `appcast.xml`. It runs on my Mac, since it needs Xcode signed in to the team, a `notary` profile from `xcrun notarytool store-credentials` and the Sparkle key in the login keychain.
 
 ## Contributing
 

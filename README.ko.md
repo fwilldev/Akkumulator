@@ -106,7 +106,7 @@ xcodebuild -project Akkumulator.xcodeproj -scheme Akkumulator -derivedDataPath b
 
 ### 릴리스
 
-`./scripts/release.sh 1.2.0`은 앱을 빌드하고, Developer ID로 서명하고, DMG를 공증하고, Sparkle용으로 서명한 다음, DMG와 `appcast.xml`이 포함된 GitHub 릴리스를 게시합니다. Xcode에 팀 계정이 로그인되어 있어야 하고, `xcrun notarytool store-credentials`로 만든 `notary` 프로필과 로그인 키체인의 Sparkle 키가 필요하므로 제 Mac에서 실행합니다.
+`./scripts/release.sh 1.2.0 notes.md`은 앱을 빌드하고, Developer ID로 서명하고, DMG를 공증하고, Sparkle용으로 서명한 다음, DMG와 `appcast.xml`이 포함된 GitHub 릴리스를 게시합니다. Xcode에 팀 계정이 로그인되어 있어야 하고, `xcrun notarytool store-credentials`로 만든 `notary` 프로필과 로그인 키체인의 Sparkle 키가 필요하므로 제 Mac에서 실행합니다.
 
 ## 기여하기
 

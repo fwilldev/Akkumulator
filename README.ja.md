@@ -106,7 +106,7 @@ xcodebuild -project Akkumulator.xcodeproj -scheme Akkumulator -derivedDataPath b
 
 ### リリース
 
-`./scripts/release.sh 1.2.0`は、アプリをビルドし、Developer IDで署名し、DMGを公証し、Sparkle用に署名して、DMGと`appcast.xml`を含むGitHubリリースを公開します。XcodeにチームのAppleアカウントでサインインしていること、`xcrun notarytool store-credentials`で作成した`notary`プロファイル、ログインキーチェーン内のSparkleキーが必要なため、私のMacで実行しています。
+`./scripts/release.sh 1.2.0 notes.md`は、アプリをビルドし、Developer IDで署名し、DMGを公証し、Sparkle用に署名して、DMGと`appcast.xml`を含むGitHubリリースを公開します。XcodeにチームのAppleアカウントでサインインしていること、`xcrun notarytool store-credentials`で作成した`notary`プロファイル、ログインキーチェーン内のSparkleキーが必要なため、私のMacで実行しています。
 
 ## コントリビュート
 

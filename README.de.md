@@ -105,7 +105,7 @@ Der Verlauf liegt in `~/Library/Application Support/Akkumulator/History.store`.
 
 ### Releases
 
-`./scripts/release.sh 1.2.0` baut die App, signiert sie mit Developer ID, notarisiert das DMG, signiert es für Sparkle und veröffentlicht ein GitHub-Release mit dem DMG und `appcast.xml`. Das Skript läuft auf meinem Mac, denn es braucht Xcode mit Anmeldung im Team, ein `notary`-Profil aus `xcrun notarytool store-credentials` und den Sparkle-Schlüssel im Anmeldeschlüsselbund.
+`./scripts/release.sh 1.2.0 notes.md` baut die App, signiert sie mit Developer ID, notarisiert das DMG, signiert es für Sparkle und veröffentlicht ein GitHub-Release mit dem DMG und `appcast.xml`. Das Skript läuft auf meinem Mac, denn es braucht Xcode mit Anmeldung im Team, ein `notary`-Profil aus `xcrun notarytool store-credentials` und den Sparkle-Schlüssel im Anmeldeschlüsselbund.
 
 ## Mitmachen
 

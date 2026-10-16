@@ -1,10 +1,12 @@
 #!/bin/zsh
-# Builds, notarizes and publishes a release: ./scripts/release.sh 1.2.0
+# Builds, notarizes and publishes a release: ./scripts/release.sh 1.2.0 notes.md
 # Runs locally because the Developer ID certificate is cloud-managed by Xcode.
 # One-time setup: xcrun notarytool store-credentials notary ...; Sparkle key in the login keychain (generate_keys).
 set -euo pipefail
 
-VERSION=${1:?usage: release.sh <version>}
+VERSION=${1:?usage: release.sh <version> <notes.md>}
+NOTES=${2:?usage: release.sh <version> <notes.md>}
+[[ -f $NOTES ]] || { echo "No release notes at $NOTES."; exit 1; }
 TEAM=Q738AAV584
 SPARKLE_VERSION=2.10.0
 REPO=fwilldev/Akkumulator
@@ -54,7 +56,10 @@ cat > "$WORK/appcast.xml" <<EOF
       <sparkle:version>$VERSION</sparkle:version>
       <sparkle:shortVersionString>$VERSION</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-      <sparkle:releaseNotesLink>https://github.com/$REPO/releases/tag/v$VERSION</sparkle:releaseNotesLink>
+      <description sparkle:format="markdown"><![CDATA[
+$(cat "$NOTES")
+]]></description>
+      <sparkle:fullReleaseNotesLink>https://github.com/$REPO/releases</sparkle:fullReleaseNotesLink>
       <enclosure url="https://github.com/$REPO/releases/download/v$VERSION/Akkumulator-$VERSION.dmg" type="application/octet-stream" $SIGNATURE />
     </item>
   </channel>
@@ -62,4 +67,4 @@ cat > "$WORK/appcast.xml" <<EOF
 EOF
 
 gh release create "v$VERSION" "$DMG" "$WORK/appcast.xml" -R "$REPO" --target "$(git rev-parse HEAD)" \
-  --title "Akkumulator $VERSION" --generate-notes
+  --title "Akkumulator $VERSION" --notes-file "$NOTES"

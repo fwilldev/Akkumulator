@@ -105,7 +105,7 @@ El historial se guarda en `~/Library/Application Support/Akkumulator/History.sto
 
 ### Releases
 
-`./scripts/release.sh 1.2.0` compila la app, la firma con Developer ID, notariza el DMG, lo firma para Sparkle y publica una release de GitHub con el DMG y `appcast.xml`. Se ejecuta en mi Mac, porque necesita Xcode con sesión iniciada en el equipo, un perfil `notary` creado con `xcrun notarytool store-credentials` y la clave de Sparkle en el llavero de inicio de sesión.
+`./scripts/release.sh 1.2.0 notes.md` compila la app, la firma con Developer ID, notariza el DMG, lo firma para Sparkle y publica una release de GitHub con el DMG y `appcast.xml`. Se ejecuta en mi Mac, porque necesita Xcode con sesión iniciada en el equipo, un perfil `notary` creado con `xcrun notarytool store-credentials` y la clave de Sparkle en el llavero de inicio de sesión.
 
 ## Contribuir
 
