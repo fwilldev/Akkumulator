@@ -16,15 +16,19 @@ Akkumulator is a free, open-source battery health app for macOS. It tells you ho
 
 ## Why Akkumulator?
 
-How it compares with [coconutBattery](https://www.coconut-flavour.com/coconutbattery/), [Mac 4 Breakfast](https://github.com/onekapisch/Mac-4-Breakfast), [iStat Menus](https://bjango.com/mac/istatmenus/) and [Juicy](https://getjuicy.app) (as of October 2026):
+How it compares with other battery apps (as of October 2026):
 
-- All of it is free. There's no Plus tier, license key or trial. coconutBattery sells a Plus upgrade, Mac 4 Breakfast costs $4.99 for the full version, and iStat Menus and Juicy are paid apps.
-- It's open source (MIT), so you can read exactly what the app does with your devices. The other four are closed source.
-- iPhones and iPads work over Wi-Fi too, at no extra cost. In coconutBattery, Wi-Fi is a Plus feature. iStat Menus shows the charge of Bluetooth accessories, but not the battery health of an iPhone or iPad.
-- Your history can follow you to every Mac through iCloud, if you turn sync on. Juicy, for example, keeps everything on one Mac.
-- You can bring your coconutBattery history along. Akkumulator imports `.ccba` exports and matches devices by serial number, so old and new entries end up in one timeline.
-- Nothing is hidden behind a paywall: per-cell voltages, lifetime minimums and maximums, and a raw view of every value the battery gauge reports.
-- No account and no tracking. The only network request is the update check.
+| | Akkumulator | [coconutBattery](https://www.coconut-flavour.com/coconutbattery/) | [Mac 4 Breakfast](https://github.com/onekapisch/Mac-4-Breakfast) | [iStat Menus](https://bjango.com/mac/istatmenus/) | [Juicy](https://getjuicy.app) |
+|---|:-:|:-:|:-:|:-:|:-:|
+| Price | Free | Free, Plus paid | Free, full version $4.99 | Paid | Paid |
+| Open source | ✓ (MIT) | ✗ | ✗ | ✗ | ✗ |
+| iPhone/iPad battery health | ✓ | ✓ | ✓ | ✗ | ✓ |
+| iPhone/iPad over Wi-Fi | ✓ | Plus | ✓ | ✗ | – |
+| History synced via iCloud | ✓ | – | – | – | ✗ |
+| Import coconutBattery history | ✓ | – | – | – | – |
+| Raw gauge data | ✓ | Plus | – | – | – |
+
+– = not offered or not documented. iStat Menus shows the charge of Bluetooth accessories, not iPhone or iPad battery health. No account and no tracking in Akkumulator: the only network request is the update check.
 
 ## Features
 
