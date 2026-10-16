@@ -6,11 +6,27 @@ struct MenuBarView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            if store.allLive.isEmpty {
+            if store.allLive.isEmpty && store.accessories.isEmpty {
                 Text("No battery found").foregroundStyle(.secondary)
             }
             ForEach(store.allLive) { info in
                 MenuDeviceRow(info: info)
+                Divider()
+            }
+            if !store.accessories.isEmpty {
+                VStack(alignment: .leading, spacing: 6) {
+                    ForEach(store.accessories) { accessory in
+                        HStack {
+                            Label(accessory.name, systemImage: accessory.symbol).lineLimit(1)
+                            Spacer()
+                            if accessory.isCharging {
+                                Image(systemName: "bolt.fill").font(.caption).foregroundStyle(.green)
+                            }
+                            Text(accessory.parts.count == 1 ? "\(accessory.parts[0].percent) %" : accessory.partsText)
+                                .font(.caption).monospacedDigit().foregroundStyle(.secondary)
+                        }
+                    }
+                }
                 Divider()
             }
             HStack {
@@ -34,6 +50,7 @@ struct MenuBarView: View {
 
 private struct MenuDeviceRow: View {
     let info: BatteryInfo
+    @AppStorage(Defaults.temperatureUnit) private var tempUnit = TemperatureUnit.celsius
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -49,7 +66,7 @@ private struct MenuDeviceRow: View {
                 }
                 GridRow {
                     item("Cycles", format(info.cycleCount, ""))
-                    item("Temperature", format(info.temperature))
+                    item("Temperature", format(info.temperature, tempUnit))
                 }
                 GridRow {
                     item("Power", format(watts: info.batteryWatts))

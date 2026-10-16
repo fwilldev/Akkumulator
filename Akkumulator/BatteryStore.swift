@@ -47,15 +47,18 @@ enum Defaults {
     static let macAlertThreshold = "macAlertThreshold"
     static let iosAlertThreshold = "iosAlertThreshold"
     static let menuBarItem = "menuBarItem"
+    static let temperatureUnit = "temperatureUnit"
 
     static func register() {
-        UserDefaults.standard.register(defaults: [iCloudSync: true, autoSnapshot: true, macAlertThreshold: 0, iosAlertThreshold: 0])
+        UserDefaults.standard.register(defaults: [iCloudSync: true, autoSnapshot: true, macAlertThreshold: 0, iosAlertThreshold: 0,
+                                                  temperatureUnit: (Locale.current.measurementSystem == .us ? TemperatureUnit.fahrenheit : .celsius).rawValue])
     }
 }
 
 @Observable final class BatteryStore {
     var mac: BatteryInfo?
     var devices: [String: BatteryInfo] = [:]
+    var accessories: [Accessory] = []
     /// Connected devices that couldn't be read yet (e.g. not trusted), keyed by UDID.
     var deviceErrors: [String: String] = [:]
     var mobileDeviceError: String?
@@ -86,6 +89,8 @@ enum Defaults {
     func live(_ id: String) -> BatteryInfo? { mac?.id == id ? mac : devices.values.first { $0.id == id } }
 
     func refreshMac() {
+        let accessories = Accessories.read()
+        if accessories != self.accessories { self.accessories = accessories }
         guard let info = MacBattery.read() else { return }
         mac = info
         didRead(info)

@@ -88,6 +88,7 @@ struct SettingsView: View {
     @AppStorage(Defaults.macAlertThreshold) private var macThreshold = 0
     @AppStorage(Defaults.iosAlertThreshold) private var iosThreshold = 0
     @AppStorage(Defaults.menuBarItem) private var menuBarItem = MenuBarItem.off
+    @AppStorage(Defaults.temperatureUnit) private var tempUnit = TemperatureUnit.celsius
     @State private var language = Self.appLanguage
     private static let launchLanguage = appLanguage
 
@@ -103,6 +104,10 @@ struct SettingsView: View {
                     Text("Off").tag(MenuBarItem.off)
                     Text("Icon").tag(MenuBarItem.icon)
                     Text("Battery percentage").tag(MenuBarItem.percent)
+                }
+                Picker("Temperature", selection: $tempUnit) {
+                    Text("Celsius (°C)").tag(TemperatureUnit.celsius)
+                    Text("Fahrenheit (°F)").tag(TemperatureUnit.fahrenheit)
                 }
                 Picker("Language", selection: $language) {
                     Text("System").tag("")

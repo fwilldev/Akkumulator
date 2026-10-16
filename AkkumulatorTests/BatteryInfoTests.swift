@@ -56,6 +56,28 @@ struct BatteryInfoTests {
     }
 
     /// iOS diagnostics_relay / pre-26 macOS layout: everything at top level, cells as arrays.
+    /// Shape of IOPSCopyPowerSourcesByType output with AirPods (case listed first) and a mouse.
+    @Test func groupsAirPodsParts() {
+        let bud: (String, Int) -> [String: Any] = { side, percent in
+            ["Part Identifier": side, "Current Capacity": percent, "Is Charging": false]
+        }
+        let sources: [[String: Any]] = [
+            ["Type": "InternalBattery", "Current Capacity": 80],
+            ["Type": "Accessory Source", "Name": "Case von AirPods", "Group Identifier": "G", "Part Identifier": "Case",
+             "Accessory Category": "Audio Battery Case", "Current Capacity": 77, "Is Charging": true, "Vendor ID": 76],
+            ["Type": "Accessory Source", "Name": "AirPods", "Group Identifier": "G", "Accessory Category": "Headset",
+             "Current Capacity": 90, "Vendor ID": 76, "Combined Parts": [bud("Left", 100), bud("Right", 90)]],
+            ["Type": "Accessory Source", "Name": "MX Master 3S", "Accessory Identifier": "M", "Accessory Category": "Mouse",
+             "Current Capacity": 65, "Vendor ID": 1133],
+        ]
+        let result = Accessories.parse(sources)
+        #expect(result.map(\.name) == ["AirPods", "MX Master 3S"])
+        #expect(result[0].parts.map(\.kind) == ["Left", "Right", "Case"])
+        #expect(result[0].parts.map(\.percent) == [100, 90, 77])
+        #expect(result[0].isCharging && result[0].symbol == "airpods")
+        #expect(result[1].parts.map(\.percent) == [65] && result[1].symbol == "computermouse")
+    }
+
     @Test func parsesClassicLayout() {
         let registry: [String: Any] = [
             "AppleRawCurrentCapacity": 2000, "AppleRawMaxCapacity": 2500, "DesignCapacity": 3000, "MaxCapacity": 2500,

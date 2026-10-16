@@ -25,6 +25,15 @@ struct ContentView: View {
                         Text(error).font(.caption).foregroundStyle(.secondary)
                     }
                 }
+                if !store.accessories.isEmpty {
+                    Section("Accessories") {
+                        ForEach(store.accessories) { accessory in
+                            DeviceRow(name: accessory.name, subtitle: accessory.partsText, symbol: accessory.symbol,
+                                      percent: accessory.parts.count == 1 ? accessory.parts[0].percent : nil, charging: accessory.isCharging)
+                                .selectionDisabled()
+                        }
+                    }
+                }
                 let offline = historyDevices.filter { store.live($0.deviceID) == nil }
                 if !offline.isEmpty {
                     Section("History") {
@@ -106,7 +115,9 @@ private struct DeviceRow: View {
             HStack(spacing: 4) {
                 VStack(alignment: .leading) {
                     Text(name).lineLimit(1)
-                    Text(subtitle).font(.caption).foregroundStyle(.secondary).lineLimit(2)
+                    if !subtitle.isEmpty {
+                        Text(subtitle).font(.caption).foregroundStyle(.secondary).lineLimit(2)
+                    }
                 }
                 Spacer()
                 if charging {
@@ -138,16 +149,29 @@ private struct DeviceDetail: View {
     let fallbackName: String
     @Environment(BatteryStore.self) private var store
     @State private var tab = Tab.overview
+    @State private var opened: Set<Tab> = []
     @State private var justSaved = false
 
     var body: some View {
         let info = store.live(id)
         Group {
-            switch info == nil ? .history : tab {
-            case .overview: OverviewView(info: info!)
-            case .details: DetailsView(info: info!)
-            case .history: HistoryView(deviceID: id)
-            case .raw: RawView(entries: info!.raw)
+            if let info {
+                // Building a tab's Form/Table costs ~200 ms, so visited tabs stay alive and are only hidden.
+                ZStack {
+                    ForEach(Tab.allCases.filter { $0 == tab || opened.contains($0) }, id: \.self) { page in
+                        TabPage(tab: page, info: info, deviceID: id, active: page == tab)
+                            .equatable()
+                            .opacity(page == tab ? 1 : 0)
+                            .allowsHitTesting(page == tab)
+                            .accessibilityHidden(page != tab)
+                    }
+                }
+                .onChange(of: tab, initial: true) { _, new in
+                    // Overview is cheap to rebuild and runs a charging animation, so it isn't kept.
+                    if new != .overview { opened.insert(new) }
+                }
+            } else {
+                HistoryView(deviceID: id)
             }
         }
         .navigationTitle(info?.name ?? fallbackName)
@@ -179,8 +203,30 @@ private struct DeviceDetail: View {
     }
 }
 
+/// Hidden pages compare equal regardless of new readings, so live refreshes only update the visible one.
+private struct TabPage: View, Equatable {
+    let tab: DeviceDetail.Tab
+    let info: BatteryInfo
+    let deviceID: String
+    let active: Bool
+
+    static func == (a: Self, b: Self) -> Bool {
+        a.tab == b.tab && a.active == b.active && (!a.active || a.info == b.info)
+    }
+
+    var body: some View {
+        switch tab {
+        case .overview: OverviewView(info: info)
+        case .details: DetailsView(info: info)
+        case .history: HistoryView(deviceID: deviceID)
+        case .raw: RawView(entries: info.raw)
+        }
+    }
+}
+
 private struct OverviewView: View {
     let info: BatteryInfo
+    @AppStorage(Defaults.temperatureUnit) private var tempUnit = TemperatureUnit.celsius
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
@@ -220,7 +266,7 @@ private struct OverviewView: View {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 170), spacing: 12)], spacing: 12) {
                     Tile(title: "Cycle Count", symbol: "arrow.triangle.2.circlepath", value: format(info.cycleCount, ""),
                          detail: info.designCycleCount.map { String(localized: "of \($0) designed") })
-                    Tile(title: "Temperature", symbol: "thermometer.medium", value: format(info.temperature))
+                    Tile(title: "Temperature", symbol: "thermometer.medium", value: format(info.temperature, tempUnit))
                     Tile(title: "Power", symbol: "bolt.fill", value: format(watts: info.batteryWatts), detail: info.statusText)
                     Tile(title: "Voltage", symbol: "bolt.horizontal.fill", value: info.voltage.map { (Double($0) / 1000).formatted(.number.precision(.fractionLength(2))) + " V" } ?? "–")
                     if let adapter = info.adapterWatts {
@@ -244,6 +290,7 @@ private struct OverviewView: View {
 
 private struct DetailsView: View {
     let info: BatteryInfo
+    @AppStorage(Defaults.temperatureUnit) private var tempUnit = TemperatureUnit.celsius
 
     var body: some View {
         Form {
@@ -263,7 +310,7 @@ private struct DetailsView: View {
                 row("Current", format(info.amperage, "mA"))
                 row("Battery power", format(watts: info.batteryWatts))
                 row("System power input", info.systemPowerIn.map { format(watts: Double($0) / 1000) })
-                row("Temperature", format(info.temperature))
+                row("Temperature", format(info.temperature, tempUnit))
             }
             if !info.cellVoltages.isEmpty {
                 Section("Cells") {
@@ -281,8 +328,8 @@ private struct DetailsView: View {
                 row("Cycle count", info.cycleCount.map { c in info.designCycleCount.map { "\(c) / \($0)" } ?? "\(c)" })
                 row("Operating time", info.operatingHours.map { formatHours($0) })
                 row("First use", info.firstUse?.formatted(date: .long, time: .omitted))
-                row("Min. temperature", format(info.lifetimeMinTemp))
-                row("Max. temperature", format(info.lifetimeMaxTemp))
+                row("Min. temperature", format(info.lifetimeMinTemp, tempUnit))
+                row("Max. temperature", format(info.lifetimeMaxTemp, tempUnit))
                 row("Max. charge current", format(info.lifetimeMaxChargeCurrent, "mA"))
                 row("Max. discharge current", format(info.lifetimeMaxDischargeCurrent.map(abs), "mA"))
                 row("Min. / max. pack voltage", pair(info.lifetimeMinPackVoltage, info.lifetimeMaxPackVoltage, "mV"))
@@ -327,17 +374,35 @@ private struct DetailsView: View {
     }
 }
 
+// textSelection on Table cells makes every cell a text view, which lags with hundreds of rows; copy via row selection instead.
 private struct RawView: View {
     let entries: [RawEntry]
     @State private var search = ""
+    @State private var selection = Set<RawEntry.ID>()
 
     var body: some View {
-        Table(entries.filter { search.isEmpty || $0.key.localizedCaseInsensitiveContains(search) || $0.value.localizedCaseInsensitiveContains(search) }) {
+        Table(entries.filter { search.isEmpty || $0.key.localizedCaseInsensitiveContains(search) || $0.value.localizedCaseInsensitiveContains(search) },
+              selection: $selection) {
             TableColumn("Key", value: \.key)
             TableColumn("Value", value: \.value)
         }
-        .searchable(text: $search)
-        .textSelection(.enabled)
+        // An in-content field instead of .searchable: adding/removing a toolbar search item rebuilds the whole toolbar on every tab switch.
+        .safeAreaInset(edge: .top, spacing: 0) {
+            TextField("Search", text: $search, prompt: Text("Search"))
+                .textFieldStyle(.roundedBorder)
+                .padding(8)
+        }
+        .contextMenu(forSelectionType: RawEntry.ID.self) { ids in
+            Button("Copy") {
+                NSPasteboard.general.clearContents()
+                NSPasteboard.general.setString(text(ids), forType: .string)
+            }
+        }
+        .onCopyCommand { [NSItemProvider(object: text(selection) as NSString)] }
+    }
+
+    private func text(_ ids: Set<RawEntry.ID>) -> String {
+        entries.filter { ids.contains($0.id) }.map { "\($0.key) = \($0.value)" }.joined(separator: "\n")
     }
 }
 
@@ -489,8 +554,15 @@ func format(_ value: Int?, _ unit: String) -> String {
     return unit.isEmpty ? "\(value)" : "\(value) \(unit)"
 }
 
-func format(_ celsius: Double?) -> String {
-    celsius.map { $0.formatted(.number.precision(.fractionLength(1))) + " °C" } ?? "–"
+enum TemperatureUnit: String {
+    case celsius, fahrenheit
+
+    var symbol: String { self == .celsius ? "°C" : "°F" }
+    func convert(_ celsius: Double) -> Double { self == .celsius ? celsius : celsius * 9 / 5 + 32 }
+}
+
+func format(_ celsius: Double?, _ unit: TemperatureUnit) -> String {
+    celsius.map { unit.convert($0).formatted(.number.precision(.fractionLength(1))) + " " + unit.symbol } ?? "–"
 }
 
 func format(watts: Double?) -> String {

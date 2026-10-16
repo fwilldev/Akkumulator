@@ -7,21 +7,21 @@ struct HistoryView: View {
     enum Metric: String, CaseIterable {
         case health = "Health", capacity = "Capacity", cycles = "Cycles", temperature = "Temperature"
 
-        func value(_ sample: BatterySample) -> Double? {
+        func value(_ sample: BatterySample, _ tempUnit: TemperatureUnit) -> Double? {
             switch self {
             case .health: sample.health.map { $0 * 100 }
             case .capacity: sample.fullChargeCapacity.map(Double.init)
             case .cycles: sample.cycleCount.map(Double.init)
-            case .temperature: sample.temperature
+            case .temperature: sample.temperature.map(tempUnit.convert)
             }
         }
 
-        var unit: String {
+        func unit(_ tempUnit: TemperatureUnit) -> String {
             switch self {
             case .health: "%"
             case .capacity: "mAh"
             case .cycles: ""
-            case .temperature: "°C"
+            case .temperature: tempUnit.symbol
             }
         }
     }
@@ -30,6 +30,7 @@ struct HistoryView: View {
     @Environment(\.modelContext) private var context
     @Query private var samples: [BatterySample]
     @State private var metric = Metric.health
+    @AppStorage(Defaults.temperatureUnit) private var tempUnit = TemperatureUnit.celsius
     @State private var selection = Set<PersistentIdentifier>()
     @State private var sortOrder = [KeyPathComparator(\BatterySample.date, order: .reverse)]
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -60,7 +61,7 @@ struct HistoryView: View {
 
                 Chart {
                     ForEach(samples) { sample in
-                        if let value = metric.value(sample) {
+                        if let value = metric.value(sample, tempUnit) {
                             LineMark(x: .value("Date", sample.date), y: .value(metric.rawValue, value))
                                 .interpolationMethod(.monotone)
                             PointMark(x: .value("Date", sample.date), y: .value(metric.rawValue, value))
@@ -76,7 +77,7 @@ struct HistoryView: View {
                 }
                 .chartYScale(domain: .automatic(includesZero: metric == .cycles))
                 .animation(reduceMotion ? nil : .smooth, value: metric)
-                .chartYAxisLabel(metric.unit)
+                .chartYAxisLabel(metric.unit(tempUnit))
                 .frame(height: 200)
 
                 Table(samples.sorted(using: sortOrder), selection: $selection, sortOrder: $sortOrder) {
@@ -87,7 +88,7 @@ struct HistoryView: View {
                     TableColumn("Design", value: \.sortDesign) { Text(format($0.designCapacity, "mAh")) }
                     TableColumn("Cycles", value: \.sortCycles) { Text(format($0.cycleCount, "")) }
                     TableColumn("Charge", value: \.sortCharge) { Text(format($0.chargePercent, "%")) }
-                    TableColumn("Temperature", value: \.sortTemperature) { Text(format($0.temperature)) }
+                    TableColumn("Temperature", value: \.sortTemperature) { Text(format($0.temperature, tempUnit)) }
                 }
                 .monospacedDigit()
                 .onDeleteCommand(perform: deleteSelection)
