@@ -12,6 +12,8 @@
 
 # Akkumulator
 
+**English** · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Italiano](README.it.md) · [Português (Portugal)](README.pt-PT.md) · [Português (Brasil)](README.pt-BR.md) · [简体中文](README.zh-Hans.md) · [한국어](README.ko.md) · [日本語](README.ja.md)
+
 Akkumulator is a free, open-source battery health app for macOS. It tells you how your MacBook's battery is doing, and the battery of any iPhone or iPad you plug in or pair over Wi-Fi: health, cycle count, capacity, temperature and quite a bit more.
 
 ## Why Akkumulator?
@@ -24,6 +26,7 @@ How it compares with other battery apps (as of October 2026):
 | Open source | ✓ (MIT) | ✗ | ✗ | ✗ | ✗ |
 | iPhone/iPad battery health | ✓ | ✓ | ✓ | ✗ | ✓ |
 | iPhone/iPad over Wi-Fi | ✓ | Plus | ✓ | ✗ | – |
+| Bluetooth accessories (charge) | ✓ | ✗ | ✓ | ✓ | ✓ |
 | History synced via iCloud | ✓ | ✗ | – | – | ✗ |
 | Import coconutBattery history | ✓ | – | – | – | – |
 | Raw gauge data | ✓ | Plus | – | – | – |
@@ -34,13 +37,14 @@ How it compares with other battery apps (as of October 2026):
 
 - Charge, health, cycle count, temperature, voltage, current and power draw of your Mac's battery. Also the power adapter, per-cell voltages, lifetime stats, serial number and manufacture date.
 - The same readings for iPhones and iPads connected over USB or Wi-Fi. An Apple Watch only reports its charge level.
+- The charge of Bluetooth accessories such as AirPods (left, right and case), keyboards and mice.
 - One snapshot per device and day, or whenever you click the button. History shows up as a chart and a sortable table, and you can export it as CSV.
 - History syncs between your Macs through iCloud.
 - Import from coconutBattery `.ccba` exports. Duplicates are skipped; coconutBattery has to be installed.
 - A menu bar item if you want one, with an icon or the current charge.
 - A notification when the Mac or an iOS device drops below a threshold you pick.
 - A raw data view with every IORegistry value the battery reports.
-- Updates itself through [Sparkle](https://sparkle-project.org).
+- Updates itself.
 - Light and Dark Mode.
 - English, German, French, Spanish, Italian, Portuguese (Portugal and Brazil), Simplified Chinese, Korean and Japanese.
 
@@ -92,6 +96,7 @@ Or open `Akkumulator.xcodeproj` and press Run. To build without an Apple develop
 | `BatteryInfo.swift` | Data model and IORegistry parser (old and new layouts, including the pack/bank/cell children on macOS and iOS 26+) |
 | `MacBattery.swift` | Reads `AppleSmartBattery` via IOKit |
 | `MobileDevice.swift` | Loads `MobileDevice.framework`, listens for devices, queries `diagnostics_relay` |
+| `Accessories.swift` | Reads the charge of Bluetooth accessories via IOPowerSources |
 | `CoconutImport.swift` | `.ccba` import |
 | `BatteryStore.swift` | Live state, refresh (Mac every 10 s, iOS every 60 s), SwiftData model, snapshots, notifications |
 | `ContentView.swift`, `HistoryView.swift`, `MenuBarView.swift` | UI |
