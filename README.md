@@ -24,7 +24,7 @@ How it compares with other battery apps (as of October 2026):
 | Open source | ✓ (MIT) | ✗ | ✗ | ✗ | ✗ |
 | iPhone/iPad battery health | ✓ | ✓ | ✓ | ✗ | ✓ |
 | iPhone/iPad over Wi-Fi | ✓ | Plus | ✓ | ✗ | – |
-| History synced via iCloud | ✓ | – | – | – | ✗ |
+| History synced via iCloud | ✓ | ✗ | – | – | ✗ |
 | Import coconutBattery history | ✓ | – | – | – | – |
 | Raw gauge data | ✓ | Plus | – | – | – |
 
